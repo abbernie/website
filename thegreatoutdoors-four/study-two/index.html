@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Syncrenetism by Andrew Bernstein</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <script type="text/javascript" src="../js/tune.js"></script>
+        <script type="text/javascript" src="../js/p5.min.js"></script>
+        <link rel="shortcut icon" type="image/jpg" href="../img/favicon.jpg"/>
+
+       
+    </head>
+    <style>
+
+        body{
+            padding:0px;
+            margin:0px;
+        }
+
+        #canvasContainer{
+            border: 1px solid black;
+        }
+
+        #back, #forward{
+            position:fixed;
+            z-index:10;
+            width:10vw;
+            height:100vh;
+            display:none;
+        }
+
+        #back{
+            left:0px;
+            
+        }
+
+        #forward{
+            right:0px;
+            
+        }
+
+        .arrow-right {
+            width: 0; 
+            height: 0; 
+            border-top: 30px solid transparent;
+            border-bottom: 30px solid transparent;
+            border-left: 30px solid #aaa;
+            margin-top:45vh;
+            margin-left:3vw;
+        }
+
+        .arrow-left {
+            width: 0; 
+            height: 0; 
+            border-top: 30px solid transparent;
+            border-bottom: 30px solid transparent; 
+            border-right:30px solid #aaa; 
+            margin-top:45vh;
+            float:right;
+            margin-right:3vw;
+
+
+        }
+     
+    </style>
+    <body>
+
+        <div class="output"></div>
+        <div id="canvasContainer"></div>
+
+        
+    </body>
+    <script>
+
+    function windowResized() {
+        resizeCanvas(windowWidth, windowHeight);
+        background(0);
+        
+    }
+
+    var actx = new (AudioContext || webkitAudioContext)();
+
+    var tune = new Tune();
+    tune.loadScale('malgache');
+    var note = 60;
+
+    var freq = [500,600,650,450,100,150];
+    var rate = [8,7,6,5,0.1,0.15];
+    var fade = [0.01,0.015,0.003,0.018,0.017,0.015];
+
+    var osc = [], gain = [], lfo = [], lfoGain = [], lfo2 = [], lfoGain2 = [];
+    var bus = actx.createGain();
+    var distortion = actx.createWaveShaper();
+    
+    for(var i = 0; i < 6; i++){
+        osc[i] = actx.createOscillator();
+        osc[i].type = 'sine';
+        osc[i].frequency.value = freq[i];
+
+        gain[i] = actx.createGain();
+        
+        lfo[i] = actx.createOscillator();
+        lfo[i].type = 'sine';
+        lfo[i].frequency.value = rate[i];
+        lfoGain[i] = actx.createGain();
+        lfoGain[i].gain.value = 1;
+
+        lfo2[i] = actx.createOscillator();
+        lfo2[i].type = 'sine';
+        lfo2[i].frequency.value = fade[i];
+        lfoGain2[i] = actx.createGain();
+        lfoGain2[i].gain.value = 1;
+
+        osc[i].connect(gain[i]);
+        lfo[i].connect(lfoGain[i]);
+        lfoGain[i].connect(gain[i].gain);
+        gain[i].connect(lfoGain2[i]);
+        lfo2[i].connect(lfoGain2[i].gain);
+        lfoGain2[i].connect(bus);
+
+        lfoGain2[i].gain.value = 0;
+
+        osc[i].start();
+        lfo[i].start();
+        lfo2[i].start();
+    }
+    
+    bus.gain.value = 0.5;
+    distortion.curve = makeDistortionCurve(2);
+    distortion.oversample = 'none';
+
+    bus.connect(distortion);
+    distortion.connect(actx.destination);
+
+
+
+    var a = 0;
+    var inc;
+
+    function setup(){
+        createCanvas(window.innerWidth,window.innerHeight);
+        background(255);
+        frameRate(60);
+        inc = TWO_PI/500.0;
+
+    }
+
+    var drift = window.innerWidth/2;
+    var inc2 = 0.2;
+
+    var left = document.getElementById('back');
+    var right = document.getElementById('forward');
+
+    function draw(){
+        background(255);
+        for(var i = 0; i < 255; i++){
+            var y = map(i,0,255,0,window.innerHeight);
+
+            stroke((i*sin(a))%255);
+            strokeWeight(2);
+            var x1 = (sin(a)*i*2.5)+drift;
+            var y1 = y+sin(a);
+            var x2 = window.innerWidth/2+cos(a)*i*2.5;
+            var y2 = y+sin(a);
+            line(x1,y1,x2,y2);
+            a+=inc;
+        }
+        drift+=inc2;
+        if(drift > window.innerWidth || drift < 0){
+            inc2 = inc2 * -1;
+        }
+
+
+    }    
+
+    function makeDistortionCurve(amount) {
+      var k = typeof amount === 'number' ? amount : 50,
+        n_samples = 44100,
+        curve = new Float32Array(n_samples),
+        deg = Math.PI / 180,
+        i = 0,
+        x;
+      for ( ; i < n_samples; ++i ) {
+        x = i * 2 / n_samples - 1;
+        curve[i] = ( 3 + k ) * x * 20 * deg / ( Math.PI + k * Math.abs(x) );
+      }
+      return curve;
+    };
+
+    </script>
+   
+</html>

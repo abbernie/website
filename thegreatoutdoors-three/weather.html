@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+    	<script type="text/javascript" src="js/jquery.min.js"></script>
+        <script type="text/javascript" src="js/tune.js"></script>
+        <script type="text/javascript" src="js/p5.min.js"></script>
+        <script type="text/javascript" src="js/Tone.min.js"></script>
+
+       
+    </head>
+    <style>
+
+        body{
+            padding:0px;
+            margin:0px;
+        }
+
+        #canvasContainer{
+            border: 1px solid black;
+        }
+     
+    </style>
+    <body>
+
+        <div class="output"></div>
+        <div id="canvasContainer"></div>
+        
+    </body>
+    <script>
+
+    var actx = new (AudioContext || webkitAudioContext)();
+
+    var tune = new Tune();
+    tune.loadScale('05-22');
+    tune.mode.output = 'MIDI';
+   
+    var note = 60;
+
+    var zips = [21214,66601];
+    var objects = [];
+
+    $(window).load(function(){
+        for(var i = 0; i < zips.length;i++){
+            var weatherApi = "http://api.openweathermap.org/data/2.5/weather?zip="+zips[i]+",us&APPID=0090e55dc21f79c8b8dc61aee946719e";
+            $.getJSON(weatherApi, function(data){
+                windDir = data.wind.deg;
+                
+                    objects[i] = new myObject(windDir,(i+1)*100,(i+1)*100);
+                    objects[i].init();
+                    console.log(i);
+                
+            });
+        }
+
+    });
+
+    var windMD, windCT;
+/*
+    function response(data){
+        $(".output").html(data.weather[0].description);
+        console.log(data);
+        windDir = data.wind.deg;
+      
+        
+
+        
+       // b.speed.x = data.wind.speed;
+        }
+
+    var b, b1;
+   */
+    function setup(){
+        var canvas = createCanvas(window.innerWidth,window.innerHeight);
+        canvas.parent('canvasContainer');    
+        
+    }
+
+
+    function draw(){
+        
+        
+        //ellipse(b.position.x, b.position.y,100,100);
+        
+        // if(b.position.x >= window.innerWidth || b.position.x <= 0){
+        //     b.speed.x = b.speed.x * -1;
+        // } 
+
+        // if(b.position.y >= window.innerHeight || b.position.y <= 0){
+        //     b.speed.y = b.speed.y * -1;
+        // }
+        
+
+        //b.position.add(b.speed);
+        
+
+    }
+
+    function Boid(x,y){
+        this.position = createVector(x,y);
+        this.speed = createVector(5,8.1);
+    }
+
+    function myObject(input,x,y){
+        ellipse(x,y,50,50);
+        this.note = Math.floor(map(input,0,360,60,72));
+        console.log(this.note);
+        this.sound = {
+            wave: 'square',
+            envelope: {
+                'attack': 0.1,
+                'decay': 0.2,
+                'sustain':1,
+                'release':2
+            },
+            gain: map(input, 0, 360, 0, 1)
+        };
+        this.init = function(){
+
+                var osc = actx.createOscillator();
+                osc.frequency.value = tune.note(this.note);
+                osc.type = this.sound.wave;
+
+                var gain = actx.createGain();
+                gain.gain.value = this.sound.gain;
+                osc.connect(gain);
+                gain.connect(actx.destination);
+                osc.start();
+            };
+
+    }
+
+
+    </script>
+   
+</html>

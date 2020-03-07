@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Autognosis by Andrew Bernstein</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <script type="text/javascript" src="../js/tune.js"></script>
+        <script type="text/javascript" src="../js/p5.min.js"></script>
+        <script type="text/javascript" src="../js/CAtri.js"></script>
+        <link rel="shortcut icon" type="image/jpg" href="../img/favicon.jpg"/>
+
+       
+    </head>
+    <style>
+
+        body{
+            padding:0px;
+            margin:0px;
+        }
+
+        #canvasContainer{
+            border: 1px solid black;
+        }
+
+        #back, #forward{
+            position:fixed;
+            z-index:10;
+            width:10vw;
+            height:100vh;
+            display:none;
+        }
+
+        #back{
+            left:0px;
+            
+        }
+
+        #forward{
+            right:0px;
+            
+        }
+
+        .arrow-right {
+            width: 0; 
+            height: 0; 
+            border-top: 30px solid transparent;
+            border-bottom: 30px solid transparent;
+            border-left: 30px solid #aaa;
+            margin-top:45vh;
+            margin-left:50px;
+        }
+
+        .arrow-left {
+            width: 0; 
+            height: 0; 
+            border-top: 30px solid transparent;
+            border-bottom: 30px solid transparent; 
+            border-right:30px solid #aaa; 
+            margin-top:45vh;
+            float:right;
+            margin-right:3vw;
+
+        }
+     
+    </style>
+    <body>
+
+        <div class="output"></div>
+        <div id="canvasContainer"></div>
+       
+
+
+        
+    </body>
+    <script>
+
+    var resizeToggle = 0;
+
+    function windowResized() {
+        resizeCanvas(windowWidth, windowHeight);
+        background(0);
+        resizeToggle = 1;
+        
+    }
+
+    var actx = new (AudioContext || webkitAudioContext)();
+
+    var tune = new Tune();
+    tune.loadScale('malgache');
+   
+    var note = 60;
+    var ruleset = [1,0,0,0,0,1,0,1];
+    var ca;
+
+    function setup(){
+        createCanvas(window.innerWidth,window.innerHeight);
+        ca = new CA(ruleset, actx);
+        background(0);
+        frameRate(15);
+        angleMode(RADIANS);
+        background(0);
+
+    }
+   
+
+    function draw(){
+        ca.render();
+        ca.generate();
+
+        if(ca.finished()){
+            
+            if(resizeToggle){
+                ca.cells = new Array(Math.floor(window.innerWidth/ca.w));
+                resizeToggle = 0;
+            }
+
+            background(0);
+            ca.randomize();
+            ca.restart();
+            frameRate(random(20)+5);
+
+
+        }
+        
+    }
+
+
+    
+
+    </script>
+   
+</html>

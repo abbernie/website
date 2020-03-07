@@ -1,0 +1,112 @@
+<!doctype>
+<html>
+	<head>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+		<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+		<link href='http://fonts.googleapis.com/css?family=Roboto:400,400italic' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" type="text/css" href="css/bernie2.css">
+		<title>Andrew Bernstein</title>
+	</head>
+	
+	<body>
+		
+		<div id="background"></div>	
+		<div id="divbox">
+			
+			
+				<a class="header" id="andrew" href="index.html">
+					Andrew Bernstein
+				</a>
+				
+		
+				<a class="header link" href="shows.html">
+					Shows
+				</a>
+		
+				<a class="header link" href="bio.html">
+					Bio/CV
+				</a>
+		
+				<a class="header link" href="contact.html">
+					Contact
+				</a>
+			
+			<hr>
+			
+		
+		</div>
+		
+		<div class="clearfloat"></div>
+
+		<div id="content"></div>
+
+		
+
+		
+
+		
+	</body>
+
+
+<script>
+
+$(document).ready(function(){
+	$('#content').load('pages/work00.html');
+});
+
+$('#divbox').find('a').on('click',function(e){
+	e.preventDefault();
+
+	var $page = $('#content');
+	var hash = window.location.hash;
+
+
+
+	switch($(this).attr('href')){
+		case 'index.html':
+			//$page.load('pages/blog.html');
+			window.location.hash = "work";
+			if(window.location.hash == "#work"){
+				$page.load('pages/work00.html');
+			}
+			console.log(hash);
+			break;
+			
+		case 'shows.html':
+			//$page.load('pages/events06.html');
+			window.location.hash = "shows";
+			if(window.location.hash == "#shows"){
+				$page.load('pages/shows00.html');
+			}
+						console.log(hash);
+
+			break;
+		case 'bio.html':
+		//	$page.load('pages/about.html');
+			window.location.hash = "bio";
+			if(window.location.hash == "#bio"){
+				$page.load('pages/about.html');
+			}
+						console.log(hash);
+
+			break;
+		case 'contact.html':
+		//	$page.load('pages/contact.html');
+			window.location.hash = "contact";
+			if(window.location.hash == "#contact"){
+				$page.load('pages/contact.html');
+			}
+						console.log(hash);
+
+			break;
+		}
+
+});
+
+
+
+</script>
+
+
+
+</html>

@@ -1,0 +1,100 @@
+<html> 
+<head>
+   
+   <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.3/jquery.mobile-1.4.3.min.css" />
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://code.jquery.com/mobile/1.4.3/jquery.mobile-1.4.3.min.js"></script>
+    <script src="processing.js"></script>
+</head>
+<body>
+    
+    <style>
+        
+        body {
+            margin:0;
+            padding:0;
+            font-family: Futura-Medium;
+        }
+    
+    a{
+        text-decoration:none;
+        
+    }
+    
+    canvas{
+        position:relative;
+        left:0;
+        top:0;
+      
+    }
+    
+    #controlBar{
+        position:absolute;
+        bottom:0px;
+        width:100%;
+        height:40px;
+        
+        text-align:center;
+     
+    
+    }
+    .controls{
+        position:relative;
+        display:inline;
+        margin: 10px;
+        padding:10px;
+        font-size:1em;
+        color:#000000;
+    }
+    </style>
+
+ <script type="text/processing" data-processing-target="processing-canvas">
+
+import org.puredata.processing.*;
+
+PureData pd;
+
+void setup() {
+size(400,300);
+pd = new PureData (this, 44100, 0, 2);
+pd.openPatch ("testone.pd");
+
+// W ill au to−c onnec t t o sys tem o u t p u t s .
+
+pd.start();
+}
+
+void draw ( ) {
+// Move the mouse to change the frequency
+float frequency =
+map(mouseY , height , 0, 60 , 1200);
+// Send a float to Pd .
+// It’ll be received at the symbol freq .
+pd.sendFloat("freq", frequency);
+// Move the mouse left or right
+// to change the mix
+float left = map(mouseX , 0 , width , 0.0 , 0.5 ) ;
+float right = map(mouseX , width , 0 , 0.0 , 0.5 ) ;
+pd.sendFloat("left", left);
+pd.sendFloat("right",right);
+}
+
+void pdPrint(String s) {
+println("print:" + s ) ;
+}
+
+
+
+                  
+
+</script>
+<canvas id="processing-canvas"> </canvas>
+<div id="controlBar">
+     <a id="about" class="controls" href="about.html">About</a>
+     <a id="edit" class="controls" href="edit.html">Edit</a>
+     <a id="share" class="controls" href="share.html">Share</a>
+ </div>
+
+
+</body>
+</html>

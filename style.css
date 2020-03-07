@@ -1,0 +1,83 @@
+/* Main Styles */
+
+body{
+	margin:0px;
+	padding:40px;
+	position:relative;
+	font-family: 'Helvetica', sans serif;	
+	font-size:0.75em;
+
+
+}
+
+
+.container{
+	border:2px solid black;
+	padding:20px;
+	width:500px;
+}
+
+
+a{
+	color:#000;
+	text-decoration:none;
+
+}
+
+a:hover{
+	color:#a1a1a1;
+}
+
+
+#top{
+	position:relative;
+	width:100vw;
+	height:10vh;
+	float:left;
+	min-width:500px;
+}
+
+#right{
+	width:100vw;
+	min-width:500px;
+}
+
+#nav{
+	list-style:none;
+	margin-top:-20px;
+	margin-left:-45px;
+}
+
+#nav li{
+	margin-left:5px;
+	float:left;
+	font-size:1.5em;
+	}
+
+
+
+/* Music Styles */
+
+.container{
+	display:flex;
+	flex-wrap:wrap;
+	flex-direction:column;
+
+}
+
+.item{
+	flex:0 10%;
+	padding-bottom:20px;
+	visibility:visible;
+
+}
+
+
+#websites{
+	text-align: right;
+	margin-right:50px;
+	margin-top:20px;
+}
+
+
+

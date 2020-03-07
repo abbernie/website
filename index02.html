@@ -1,0 +1,227 @@
+<!doctype html>
+<html>
+	<head>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+		<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+		<script src= "Gibberish-master/scripts/build/gibberish_2.0.min.js"></script>
+		<link href='http://fonts.googleapis.com/css?family=Rosarivo' rel='stylesheet' type='text/css'>
+		
+	</head>
+
+	<body> 
+
+		<style>
+
+		
+		
+		canvas {
+			float:left;
+			
+			position:fixed;
+			margin:-10px;
+			padding:0;
+			width: 100% ;
+			height:100%;
+			z-index:1;
+			
+		}
+		
+		#wrapper{
+			float:left;
+			position:relative;
+			display:block;
+			top:100px;
+			left:150px;
+			margin-bottom:200px;			
+		}
+		
+		.bottom{
+			position:absolute;
+			display:inline;
+			margin:0;
+			padding:0;
+			left:0;
+			right:0;
+			bottom:0;
+			height:40px;
+			background-color: black;
+			color:white;
+			font-size:16pt;
+			z-index:2;
+			font-family: 'Rosarivo', serif;
+		}
+		
+		#button{
+			float:right;
+				position:absolute;
+				margin:0;
+				padding:0;
+				left:0;
+				right:0;
+				bottom:0;
+				height:20px;
+				background-color:black;
+				color:white;
+				font-family: 'Rosarivo', serif;
+				font-size:10pt;
+				
+				
+		}
+		
+		#triangle-right {
+			width: 0;
+			height: 0;
+			border-top: 13px solid transparent;
+			border-left: 26px solid white;
+			border-bottom: 13px solid transparent;
+		}
+		
+		#triangle-left {
+			width: 0;
+			height: 0;
+			border-top: 13px solid transparent;
+			border-right: 26px solid white;
+			border-bottom: 13px solid transparent;
+		}
+		
+		a:hover{
+			color:#0000aa;
+		}
+		a{
+			text-decoration:none;
+		}
+
+		</style>
+
+		
+			<canvas id="canvas"></canvas>
+	
+		
+		
+		<script>
+		
+		
+		
+		Gibberish.init()
+		Gibberish.Time.export()
+		Gibberish.Binops.export()
+		
+		//window.onmousemove = xPos;
+		//window.onmousedown = playNote;
+		
+		
+		var canvas = document.getElementById("canvas");
+		var ctx = canvas.getContext("2d");
+	
+		var width = 2;
+		var height = canvas.height;
+		var x = 0;
+		var y = 0;
+		
+		var globalClock = 0;
+		var color = 0;
+		var colorTwo = 0;
+		var inc = 1;
+		var incTwo = 2;
+		
+		var toggle = 0; 
+		var mouseX = 0;
+		var mouseY = 0;
+	
+		a = new Gibberish.PolySynth2({ attack:ms(2000), decay:ms(5000), cutoff:.3, resonance:2 }).connect(); 
+		a.waveform = "Sine";
+		a.amp = 1;
+		a.pan = 1;
+		
+		
+		
+		sqToneA = new Gibberish.Sine(900, 0.3);
+		sqLfoA = new Gibberish.Sine(0.002,0.1);
+		sqToneA.amp = sqLfoA;
+		sqToneA.pan = 1;
+		sqToneA.connect();
+		
+		sqToneB = new Gibberish.Sine(1000, 0.3);
+		sqLfoB = new Gibberish.Sine(0.001,0.1);
+		sqToneB.amp = sqLfoB;
+		sqToneB.pan = 0;
+		
+		
+		sqToneC = new Gibberish.Sine(1100, 0.3);
+		sqLfoC = new Gibberish.Sine(0.003,0.1);
+		sqToneC.amp = sqLfoC;
+		sqToneC.pan = 1;
+		
+	
+		sqToneD = new Gibberish.Sine(1200, 0.3);
+		sqLfoD = new Gibberish.Sine(0.005,0.1);
+		sqToneD.amp = sqLfoD;
+		sqToneD.pan = 0;
+		
+		
+		sqToneE = new Gibberish.Sine(800, 0.3);
+		sqLfoE = new Gibberish.Sine(.001,0.1);
+		sqToneE.amp = sqLfoE;
+		
+		
+		
+
+		function clock(){
+			globalClock = globalClock+1;
+			color = color + inc;
+			colorTwo = colorTwo + incTwo;
+			
+			if(color >= 255 || color <= 0){
+				inc = inc * -1;
+			}
+			
+			if(colorTwo >= 255 || colorTwo <= 0){
+				incTwo = incTwo * -1;
+			}
+			
+			
+					for(i=0;i<(canvas.width/width)+1;i++){
+						
+						ctx.beginPath();
+						ctx.fillStyle = "rgb("+colorTwo+",200,"+color+")";
+						ctx.fillRect(i*width*2,y,width,height);
+						ctx.closePath();
+						
+						ctx.beginPath();
+						ctx.fillStyle = "rgb(126,"+colorTwo+","+color+")";
+						ctx.fillRect(i*width*2+width,y,width,height);
+						ctx.closePath();
+					}
+					
+					if(globalClock == 100){
+						sqToneE.connect();
+					}
+					
+					if(globalClock == 300){
+						sqToneB.connect();
+					}
+					
+					if(globalClock == 400){
+						sqToneD.connect();
+					}
+					
+					if(globalClock == 600){
+						sqToneC.connect();
+					}
+					
+												
+		}
+		
+		
+		
+		setInterval("clock()",100);
+		//setInterval("shimmer()",100);		
+		clock();
+	
+	
+	
+		</script>
+
+	</body>
+
+</html>

@@ -1,0 +1,513 @@
+<html> 
+<head>
+   <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.3/jquery.mobile-1.4.3.min.css" />
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://code.jquery.com/mobile/1.4.3/jquery.mobile-1.4.3.min.js"></script>
+<script type="text/javascript">//var switchTo5x=true;</script>
+<script type="text/javascript" src="http://w.sharethis.com/button/buttons.js"></script>
+<script type="text/javascript">stLight.options({publisher: "4cd4e902-920a-46ef-996f-ad7c5d3c9543", doNotHash: false, doNotCopy: false, hashAddressBar: false});</script>
+   
+    <script src="processing.js"></script>
+</head>
+<body>
+    
+    <style>
+        
+        body {
+            margin:0;
+            padding:0;
+            font-family: Helvetica;
+            font-weight:100;
+        }
+    
+    a:link{
+        color:#000000;
+        text-decoration:none;
+    }
+
+    a:visited{
+        color:#000000;
+    }
+
+    a:hover{
+        text-decoration:none;
+        color:#000000;
+        text-shadow: 2px 2px #ffffff;
+    }
+    
+    canvas{
+        position:relative;
+        left:0;
+        top:0;
+      
+    }
+    
+    #controlBar{
+        position:absolute;
+        bottom:0px;
+        width:100%;
+        height:20px;
+        padding:10px;
+        background-color:#fafafa;
+        opacity:0.8;
+        text-align:center;
+        color:black;
+    
+    }
+    .controls{
+        position:relative;
+        display:inline;
+        margin: 10px;
+        padding:10px;
+        opacity:1;
+        font-size:1em;
+        color:#000000;
+    }
+
+    .tab{
+        position:absolute;
+        display:none;
+        opacity:0.8;
+       
+        
+        left:0;
+        font-size:1em;
+       
+        text-align:center;
+        z-index:100;
+
+    }
+
+    form{
+        margin:0 auto;
+        width:400px;
+        padding: 1em;
+        border:1px solid #000;
+        border-radius:1em;
+    }
+
+    form div + div {
+        margin-top:1em;
+    }
+    label {
+        display:inline-block;
+        width:90px;
+        text-align:right;
+    }
+
+    .button{
+        padding-left:90px;
+    }
+    button{
+        margin-left:.5em;
+    }
+    </style>
+
+ <script type="text/processing" data-processing-target="processing-canvas">
+
+float x1,y1,x2,y2;
+
+float a = 0;
+float rad = 450;
+float inc = TWO_PI/rad;
+
+float a1 = 0;
+float rad1 = 400;
+float inc1 = QUARTER_PI/rad1;
+
+float r=0;
+float g=0;
+float b=0;
+float rinc = 0.5;
+float ginc= 0.1;
+float binc=1;
+float rmax = 200;
+float gmax =150;
+float bmax = 255;
+
+float addx=100;
+float addy=200;
+
+float toneA = rad;
+float toneB = rad1;
+
+int toggle = 0;
+float ramp1 = 0.5;
+float ramp2 = 0;
+
+int state;
+
+var context = new (window.AudioContext || window.webkitAudioContext)();
+
+var sine1 = context.createOscillator();
+var gain1 = context.createGain();
+sine1.type = "sine";
+sine1.connect(gain1);
+gain1.connect(context.destination);
+sine1.frequency.value = toneA;
+gain1.gain.value = 0;
+sine1.start(0);
+
+
+var sine2 = context.createOscillator();
+sine2.type = "sine";
+sine2.connect(gain1);
+sine2.frequency.value = toneB;
+sine2.start(0);
+
+var sine3 = context.createOscillator();
+var gain3 = context.createGain();
+sine3.type = "sine";
+sine3.connect(gain3);
+gain3.connect(context.destination);
+sine3.frequency.value = toneB;
+gain3.gain.value = 0;
+sine3.start(0);
+
+var sine4 = context.createOscillator();
+sine4.type = "sine";
+sine4.connect(gain3);
+sine4.frequency.value = toneA;
+sine4.start(0);
+
+$(document).ready(function(){
+    gain3.gain.linearRampToValueAtTime(0,context.currentTime);
+    
+    gain1.gain.linearRampToValueAtTime(0,context.currentTime);
+    gain1.gain.linearRampToValueAtTime(0.5,context.currentTime+20.0);
+    console.log("working it!");
+});
+
+ void setup(){
+
+     size(window.innerWidth,window.innerHeight);
+     background(255);
+     frameRate(200);
+
+ }
+ 
+ void draw(){
+   
+
+ if(window.innerWidth <= 400){
+     scale(0.5);
+     translate(width/2,height/2);
+ }
+ 
+ r += rinc;
+ g += ginc;
+ b += binc;
+ if(r <=0 || r>=rmax){
+     rinc = rinc*-1;
+ }
+ if(g <=0 || g>=gmax){
+     ginc = ginc*-1;
+ }
+ if(b <=0 || b>=bmax){
+     binc = binc*-1;
+ }
+ 
+ stroke(r,g,b);
+ strokeWeight(0.7);
+
+
+switch(state){
+    case 0:
+     inc = TWO_PI/rad;
+     inc1 = QUARTER_PI/rad1;
+     
+     x1 = sin(a1)*rad1+width/2;
+     y1 = cos(a1)*rad1+height/2;
+     x2 = x1+sin(a)*rad;
+     y2 = y1+sin(a)*rad;
+     
+     
+     line(x1,y1,x2+addx,y2+addy);
+     a+=inc;
+     a1+=inc1;
+     break;
+   
+   case 1:
+     inc = TWO_PI/rad;
+     inc1 = TWO_PI/rad1;
+    
+     x1 = sin(a1)*rad1+width/2;
+     y1 = cos(a1)*rad1+height/2;
+     x2 = x1+sin(a)*rad;
+     y2 = y1+cos(a)*rad;
+     
+     line(x1,y1,x2+addx,y2+addy);
+     a+=inc;
+     a1+=inc1;
+     break;
+    
+    case 2:
+     inc = QUARTER_PI/rad;
+     inc1 = TWO_PI/rad1;
+     
+     x1 = sin(a1)*rad1+width/2;
+     y1 = cos(a1)*rad1+height/2;
+     x2 = x1+sin(a)*rad;
+     y2 = y1+cos(a)*rad;
+     
+     line(x1,y1,x2,y2);
+     a+=inc;
+     a1+=inc1;
+     break;
+   
+   default:
+   inc = TWO_PI/rad;
+   inc1 = QUARTER_PI/rad1;
+   
+   x1 = sin(a1)*rad1+width/2;
+   y1 = cos(a1)*rad1+height/2;
+   x2 = x1+sin(a)*rad;
+   y2 = y1+sin(a)*rad;
+   
+   
+   line(x1,y1,x2+addx,y2+addy);
+   a+=inc;
+   a1+=inc1;
+   break;
+
+ }
+ }
+ 
+ 
+
+
+ void mousePressed(){
+     
+        background(255);
+      
+        rad = random(400);
+        rad1 = random(400);
+        addx = random(200);
+        addy = random(200);
+        rmax = random(255);
+        gmax = random(255);
+        bmax = random(255);
+        state = int(random(4));
+        test = state;
+        
+        // val.append(rad1,rad2);
+        //vals.append(val);
+        
+        toneA = rad;
+        toneB = rad1;
+        
+        if(toneA <= 100){
+        toneA = toneA*2;
+        } else if(toneB <=100){
+        toneB = toneB*2;
+        }
+        
+        toggle = (toggle+1)%2;
+        
+        console.log(toggle);
+       
+        if(toggle == 0){
+           
+           // gain1.gain.linearRampToValueAtTime(0,context.currentTime);
+            gain1.gain.linearRampToValueAtTime(0.5,context.currentTime+20.0);
+            //gain3.gain.linearRampToValueAtTime(0.5,context.currentTime);
+            gain3.gain.linearRampToValueAtTime(0,context.currentTime+20.0);
+             sine1.frequency.value = toneA;
+            sine2.frequency.value = toneB;
+            console.log("set 1!");
+
+            } else if(toggle == 1){
+                
+              //  gain3.gain.linearRampToValueAtTime(0,context.currentTime);
+                gain3.gain.linearRampToValueAtTime(0.5,context.currentTime+20.0);
+                //gain1.gain.linearRampToValueAtTime(0.5,context.currentTime);
+                gain1.gain.linearRampToValueAtTime(0,context.currentTime+20.0);
+                sine3.frequency.value = toneA;
+                sine4.frequency.value = toneB;
+                console.log("set 2!");
+                
+            }
+
+      //  window.location.href = "audio://hipno/sines:"+toneA+":"+toneB;
+
+     
+ }
+          
+$('#play').submit(function(){
+    var sine1 = $('#sine1').val();
+    var sine2 = $('#sine2').val();
+
+    background(255);
+      
+        rad = sine1;
+        rad1 = sine2;
+        addx = random(200);
+        addy = random(200);
+        rmax = random(255);
+        gmax = random(255);
+        bmax = random(255);
+        state = int(random(4));
+        test = state;
+        
+        // val.append(rad1,rad2);
+        //vals.append(val);
+        
+        toneA = rad;
+        toneB = rad1;
+        
+        if(toneA <= 100){
+        toneA = toneA*2;
+        } else if(toneB <=100){
+        toneB = toneB*2;
+        }
+        
+        toggle = (toggle+1)%2;
+        
+        console.log(toggle);
+       
+        if(toggle == 0){
+           
+           // gain1.gain.linearRampToValueAtTime(0,context.currentTime);
+            gain1.gain.linearRampToValueAtTime(0.5,context.currentTime+20.0);
+            //gain3.gain.linearRampToValueAtTime(0.5,context.currentTime);
+            gain3.gain.linearRampToValueAtTime(0,context.currentTime+20.0);
+             sine1.frequency.value = toneA;
+            sine2.frequency.value = toneB;
+            console.log("set 1!");
+
+            } else if(toggle == 1){
+                
+              //  gain3.gain.linearRampToValueAtTime(0,context.currentTime);
+                gain3.gain.linearRampToValueAtTime(0.5,context.currentTime+20.0);
+                //gain1.gain.linearRampToValueAtTime(0.5,context.currentTime);
+                gain1.gain.linearRampToValueAtTime(0,context.currentTime+20.0);
+                sine3.frequency.value = toneA;
+                sine4.frequency.value = toneB;
+                console.log("set 2!");
+                
+            }
+
+            document.getElementById('sine1').value ='';
+            document.getElementById('sine2').value ='';
+
+});       
+
+</script>
+<canvas id="processing-canvas"> </canvas>
+<div id="controlBar">
+     <a id="about" class="controls" href="about.html">About</a>
+     <a id="edit" class="controls" href="edit.html">Edit</a>
+     <a id="share" class="controls" href="share.html">Share</a>
+ </div>
+
+ <div id="aboutTab" class="tab">
+    Mandala Mix by Andrew Bernstein
+    <a href="back.html">back</a>
+</div>
+
+ <div id="editTab" class="tab">
+    
+    <form onsubmit="play()">
+          <div>
+            <label for="sine1">sine 1:</label>
+            <input type="text" id="sine1"/>
+        </div>
+        <div>
+            <label for="sine2">sine 1:</label>
+            <input type="text" id="sine2"/>
+        </div>
+         <div class="button">
+           <a href="back.html"> <button type="submit" >play</button></a>
+        </div>
+        <div class="back">
+          <a href="back.html"> <button type="button">back</button></a>
+      </div>
+     </form>
+    </div>
+
+<div id="shareTab" class="tab">
+    <span class='st_sharethis_large' displayText='ShareThis'></span>
+<span class='st_facebook_large' displayText='Facebook'></span>
+<span class='st_twitter_large' displayText='Tweet'></span>
+<span class='st_linkedin_large' displayText='LinkedIn'></span>
+<span class='st_pinterest_large' displayText='Pinterest'></span>
+<span class='st_email_large' displayText='Email'></span><br>
+    <a href="back.html">back</a>
+</div>
+
+<script type="text/javascript">
+var about = document.getElementById('aboutTab');
+var edit = document.getElementById('editTab');
+var share = document.getElementById('shareTab');
+
+$('#controlBar').find('a').on('click',function(e){
+    e.preventDefault();
+
+    switch($(this).attr('href')){
+        case 'about.html':
+            about.style.display = 'inline';
+            about.style.left = '30%';
+            about.style.top = '20%';
+            about.style.width = '40%';
+            about.style.height = '30%';
+
+            edit.style.display = 'none';
+            share.style.display = 'none';
+            console.log("hey!");
+            break;
+        case 'edit.html':
+            about.style.display = 'none';
+            
+            edit.style.display = 'inline';
+            edit.style.left = '30%';
+            edit.style.top = '20%';
+            edit.style.width = '40%';
+            edit.style.height = '30%';
+            
+            share.style.display = 'none';
+            console.log("hello!");
+            break;
+        case 'share.html':
+            about.style.display = 'none';
+            edit.style.display = 'none';
+            
+            share.style.display = 'inline';
+            share.style.left = '30%';
+            share.style.top = '20%';
+            share.style.width = '40%';
+            share.style.height = '30%';
+            
+            console.log("whatevs");
+            break;
+        default:
+            about.style.display = 'none';
+            edit.style.display = 'none';
+            share.style.display = 'none';
+            break;
+
+    }
+
+});
+
+    $('#aboutTab').find('a').on('click',function(e){
+        e.preventDefault();
+        about.style.display = 'none';
+    });
+
+    $('#editTab').find('a').on('click',function(e){
+        e.preventDefault();
+        edit.style.display = 'none';
+    });
+
+    $('#shareTab').find('a').on('click',function(e){
+        e.preventDefault();
+        share.style.display = 'none';
+    });
+
+    $.post("")
+
+</script>
+
+
+</body>
+</html>

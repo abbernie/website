@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Study IV by Andrew Bernstein</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <script type="text/javascript" src="../js/tune.js"></script>
+        <script type="text/javascript" src="../js/p5.min.js"></script>
+        <script type="text/javascript" src="../js/CAtri.js"></script>
+        <link rel="shortcut icon" type="image/jpg" href="../img/favicon.jpg"/>
+
+       
+    </head>
+    <style>
+
+        body{
+            padding:0px;
+            margin:0px;
+        }
+
+        #canvasContainer{
+            border: 1px solid black;
+        }
+
+     
+    </style>
+    <body>
+
+        <div class="output"></div>
+        <div id="canvasContainer"></div>
+       
+
+
+        
+    </body>
+    <script>
+
+    console.log("Study IV of The Great Outdoors by Andrew Bernstein");
+    console.log("www.andrewbernste.in");
+    console.log("www.ehserecords.com");
+
+    function handleVisibilityChange() {
+      if (document.hidden) {
+        console.log("off")
+        
+        ca.bus.gain = 0;
+        
+      } else  {
+        console.log("on")
+        
+        ca.bus.gain = 1;
+        
+      }
+    }
+
+    document.addEventListener("visibilitychange", handleVisibilityChange, false);
+
+    var resizeToggle = 0;
+
+    function windowResized() {
+        resizeCanvas(windowWidth, windowHeight);
+        background(0);
+        resizeToggle = 1;
+        
+    }
+
+    var AudioContext = window.AudioContext // Default
+        || window.webkitAudioContext // Safari and old versions of Chrome
+        || false; 
+
+    if (AudioContext) {
+        
+        var actx = new AudioContext;
+        
+    } else {
+        // Web Audio API is not supported
+        // Alert the user
+        alert("Apologies, beholder of this website, but the Web Audio API is not supported by your browser. Please, consider stepping outside and breathing deep of the world around you, upgrading to the latest version, or downloading Google Chrome or Mozilla Firefox");
+    }
+
+    var tune = new Tune();
+    tune.loadScale('malgache');
+   
+    var note = 60;
+    var ruleset = [1,0,0,0,0,1,0,1];
+    var ca;
+
+    function setup(){
+        createCanvas(window.innerWidth,window.innerHeight);
+        ca = new CA(ruleset, actx);
+        background(0);
+        frameRate(15);
+        angleMode(RADIANS);
+        background(0);
+
+    }
+   
+
+    function draw(){
+        ca.render();
+        ca.generate();
+
+        if(ca.finished()){
+            
+            if(resizeToggle){
+                ca.cells = new Array(Math.floor(window.innerWidth/ca.w));
+                resizeToggle = 0;
+            }
+
+            background(0);
+            ca.randomize();
+            ca.restart();
+            frameRate(random(20)+5);
+
+
+        }
+        
+    }
+
+
+    
+
+    </script>
+   
+</html>
