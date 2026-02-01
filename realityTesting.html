@@ -1,0 +1,241 @@
+<!doctype html>
+<html>
+	<head>
+		<title>reality testing</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1"/>
+		<!--<script src="LfOsc.js"></script>-->
+		<link rel="shortcut icon" type="image/jpg" href="../img/favicon.jpg"/>
+		
+	</head>
+
+	<body> 
+
+		<style>
+
+		
+		
+		canvas {
+			float:left;
+			
+			position:fixed;
+			margin:-10px;
+			padding:0;
+			width: 100% ;
+			height:100%;
+			z-index:1;
+			
+		}
+
+		
+		
+		
+
+		</style>
+
+		
+			<canvas id="canvas"></canvas>
+	
+		
+		<!-- Add this at the beginning of your audio projects -->
+<button id="audioStart" style="
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1000;
+    padding: 10px 20px;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+">
+    🔊 Enable Audio
+</button>
+
+<script>
+
+	// Also respond to touch events
+document.addEventListener('touchstart', initAudioOnFirstTouch, { once: true });
+
+function initAudioOnFirstTouch() {
+    // Create a muted audio context on first touch
+    const silentContext = new AudioContext();
+    const oscillator = silentContext.createOscillator();
+    const gain = silentContext.createGain();
+    gain.gain.value = 0;
+    oscillator.connect(gain);
+    gain.connect(silentContext.destination);
+    oscillator.start();
+    oscillator.stop(silentContext.currentTime + 0.1);
+    
+    // Now your main button will work
+    console.log('Audio primed for user interaction');
+}
+
+let actx = null;
+
+document.getElementById('audioStart').addEventListener('click', async () => {
+    if (actx) return;
+    
+    try {
+        // Create AudioContext
+        actx = new (window.AudioContext || window.webkitAudioContext)();
+        await actx.resume();
+        
+        // Hide button or change text
+        document.getElementById('audioStart').style.display = 'none';
+        document.getElementById('audioStart').style.background = '#666';
+        document.getElementById('audioStart').disabled = true;
+        
+        // Initialize your existing audio code here
+        initYourAudioApp();
+        
+    } catch (error) {
+        console.error('Failed to start audio:', error);
+        alert('Audio initialization failed. Please try again.');
+    }
+});
+
+
+
+// Your existing audio initialization function
+function initYourAudioApp() {
+    // Put all your existing audio initialization code here
+    // This will only run after user clicks the button
+    
+ var canvas = document.getElementById("canvas");
+		var ctx = canvas.getContext("2d");
+		
+		canvas.width = window.innerWidth;
+		canvas.height = window.innerHeight;
+		canvas.style.width = '100vw';
+		canvas.style.height = '100vh';
+
+		window.onresize = function(){
+		    canvas.width = window.innerWidth;
+		    canvas.height = window.innerHeight;
+		    canvas.style.width = '100vw';
+		    canvas.style.height = '100vh';
+		    console.log("resized")
+
+		}
+		
+
+		function createLfoOsc(freq,rate,ctx){
+			
+			var sine = ctx.createOscillator();
+			var mod = ctx.createOscillator();
+			var gain = ctx.createGain();
+			var gain2 = ctx.createGain();
+			
+			sine.type = 'sine';
+			sine.frequency.value = freq;
+			mod.type = 'sine';
+			mod.frequency.value = rate;
+			sine.connect(gain);
+			mod.connect(gain.gain);
+			gain.connect(gain2);
+
+			gain2.gain.setValueAtTime(0, actx.currentTime);
+			gain2.connect(masterGain);
+			gain2.gain.linearRampToValueAtTime(1, actx.currentTime +10.0);
+
+
+			sine.start();
+			mod.start();
+		}
+
+		var actx = new (window.AudioContext || window.webkitAudioContext)();
+		var masterGain = actx.createGain();
+
+		createLfoOsc(200,.01,actx);
+		createLfoOsc(300,.03,actx);
+		
+
+		
+
+		masterGain.connect(actx.destination);
+		masterGain.gain.setValueAtTime(0,actx.currentTime);
+		masterGain.gain.linearRampToValueAtTime(0.25,actx.currentTime + 10.0);
+
+	
+		var width = 2;
+		var height = canvas.height;
+		var x = 0;
+		var y = 0;
+		
+		var globalClock = 0;
+		var color = 0;
+		var colorTwo = 0;
+		var inc = 1;
+		var incTwo = 2;
+		
+		var toggle = 0; 
+		var mouseX = 0;
+		var mouseY = 0;
+		
+
+		function timer(){
+			globalClock = globalClock+1;
+			color = color + inc;
+			colorTwo = colorTwo + incTwo;
+			
+			if(color >= 255 || color <= 0){
+				inc = inc * -1;
+			}
+			
+			if(colorTwo >= 255 || colorTwo <= 0){
+				incTwo = incTwo * -1;
+			}
+			
+			
+					for(i=0;i<(canvas.width/width)+1;i++){
+						
+						ctx.beginPath();
+						ctx.fillStyle = "rgb("+colorTwo+",200,"+color+")";
+						ctx.fillRect(i*width*2,y,width,height);
+						ctx.closePath();
+						
+						ctx.beginPath();
+						ctx.fillStyle = "rgb(126,"+colorTwo+","+color+")";
+						ctx.fillRect(i*width*2+width,y,width,height);
+						ctx.closePath();
+					}
+					
+					if(globalClock == 300){
+						createLfoOsc(450,.06,actx);
+						masterGain.gain.linearRampToValueAtTime(0.333,actx.currentTime + 10.0);
+					}
+					
+					if(globalClock == 600){
+						createLfoOsc(500,.02,actx);
+						masterGain.gain.linearRampToValueAtTime(0.25,actx.currentTime + 10.0);
+					}
+					
+					if(globalClock == 900){
+						createLfoOsc(550,.02,actx);
+						masterGain.gain.linearRampToValueAtTime(0.2,actx.currentTime + 10.0);
+					}
+					
+					if(globalClock == 1200){
+						createLfoOsc(600,.01,actx);
+						masterGain.gain.linearRampToValueAtTime(0.16667,actx.currentTime + 10.0);
+					}
+					
+										
+		}
+		
+		
+		
+		setInterval("timer()",100);
+		//setInterval("shimmer()",100);		
+		timer();
+}
+</script>
+
+		
+
+	</body>
+
+</html>
