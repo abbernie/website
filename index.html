@@ -22,70 +22,27 @@
 </head>
 <body id="background">
 <div id="top">
-<h1><a href="home.html">ANDREW BERNSTEIN</a></h1>
+<h1><a href="./index.html">ANDREW BERNSTEIN</a></h1>
 
 <ul id="nav">
-	<li><a href="about.html" id="about">bio</a></li>
-	<li><a href="work.html" id="music">works</a></li>
-	<li><a href="calendar.html" id="calendar">calendar</a></li>
-	<li><a href="contact.html" id="contact">contact</a></li>
+	<li><a href="./pages/about.html" id="about">bio</a></li>
+	<li><a href="./pages/work.html" id="music">works</a></li>
+	<li><a href="./pages/recordings.html" id="music">recordings</a></li>
+	<li><a href="./pages/calendar.html" id="calendar">calendar</a></li>
+	<li><a href="./pages/contact.html" id="contact">contact</a></li>
 </ul>
 </div>
 
 <div id="right">
-<div id="container">
+<div id="websites">
+
 	<img src="./image_123986672.JPG" 
      alt="musical performance of In Flux by Andrew Bernstein at Shift411 in Brooklyn, NY July 2022"
-     style="max-width: 100%; height: auto; max-width: min(100%, 800px);">
-</div>
+     style="max-width: 100%; height: auto; max-width: min(100%, 800px);display:flex;">
+
+	</div>
 </div>
 </body>
-<script type="text/javascript" src="bernie.js"></script>
 <script src="js/p5.js"></script>
 <script src="js/addons/p5.dom.js"></script>
-<script>
-/*
-		var canvas;
-		var a = 0.0;
-		var inc = 0;
-
-		var a2 = 0.0;
-		var inc2 = 0;
-
-
-
-		function setup(){
-			canvas = createCanvas(510,510);
-			canvas.parent("myContainer");
-
-			inc = TWO_PI/15.0;
-			inc2 = TWO_PI/1000.0;
-
-			background(255);
-
-		}
-
-		function draw(){
-			//blendMode(BLEND);
-			// fill('rgba(255,255,255,1)');
-			// rect(0,0,displayWidth, displayHeight);
-			background(255);
-			noStroke();
-			var num = 15;
-			for(var i = 0; i < 34; i++){
-				for(var j = 0; j < 33;j++){
-
-					var r = map(i,0,displayHeight/num,0,255);
-					var g = 128;
-					var b = map(sin(a2)*100,0,100,0,255);
-					fill(r,g,b);
-					ellipse((j*(num)) + sin(a+i)*5+10,(i*(num))+10,7,7);
-				}
-			}
-
-			a+=inc;
-			a2+=inc2;
-			console.log(sin(a2)*100);
-		}
-*/
-</script></html>
+</html>
