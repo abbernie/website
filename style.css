@@ -1,83 +1,98 @@
 /* Main Styles */
+* {
+    box-sizing: border-box;
+}
 
 body{
-	margin:0px;
-	padding:40px;
-	position:relative;
-	font-family: 'Helvetica', sans serif;	
-	font-size:0.75em;
-
-
+    margin:0;
+    padding:20px;
+    font-family: 'Helvetica', sans-serif;   
+    font-size: 0.75em;
+    max-width: 100%;
+    overflow-x: hidden;
 }
-
 
 .container{
-	border:2px solid black;
-	padding:20px;
-	width:500px;
+    border:2px solid black;
+    padding:20px;
+    width:100%;
+    max-width:500px;
+    display:flex;
+    margin-top: 20px;
+    clear: both;
 }
 
-
 a{
-	color:#000;
-	text-decoration:none;
-
+    color:#000;
+    text-decoration:none;
 }
 
 a:hover{
-	color:#a1a1a1;
+    color:#a1a1a1;
 }
-
 
 #top{
-	position:relative;
-	width:100vw;
-	height:10vh;
-	float:left;
-	min-width:500px;
+    display:flex;
+    flex-direction: column;    /* stack name and nav vertically */
+    width:100%;
+    margin-bottom: 20px;
 }
 
-#right{
-	width:100vw;
-	min-width:500px;
+#top h1 {
+    margin: 0 0 10px 0;        /* space below name */
 }
 
 #nav{
-	list-style:none;
-	margin-top:-20px;
-	margin-left:-45px;
+    list-style:none;
+    display:flex;
+    flex-wrap: wrap;
+    padding-left:0;
+    margin: 0;
 }
 
 #nav li{
-	margin-left:5px;
-	float:left;
-	font-size:1.5em;
-	}
+    margin-right: 20px;
+    margin-left:0;
+    font-size:1.5em;
+}
 
+#nav li:first-child {
+    margin-left: 0;
+}
 
+#right{
+    width:100%;
+    clear: both;
+}
 
 /* Music Styles */
-
 .container{
-	display:flex;
-	flex-wrap:wrap;
-	flex-direction:column;
-
+    display:flex;
+    flex-wrap:wrap;
+    flex-direction:column;
 }
 
 .item{
-	flex:0 10%;
-	padding-bottom:20px;
-	visibility:visible;
-
+    flex:0 10%;
+    padding-bottom:20px;
+    visibility:visible;
 }
-
 
 #websites{
-	text-align: right;
-	margin-right:50px;
-	margin-top:20px;
+    text-align: right;
+    margin-right:20px;
+    margin-top:20px;
+    width:100%;
 }
 
+/* make images responsive */
+img {
+    max-width: 100%;
+    height: auto;
+}
 
-
+/* optional: adjust for very small screens */
+@media (max-width: 500px) {
+    body { padding: 10px; }
+    #nav li { font-size: 1.2em; margin-right: 10px; }
+}
